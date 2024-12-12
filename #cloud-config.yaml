@@ -1,0 +1,19 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+packages:
+  - nginx
+
+runcmd:
+  - echo "server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+      root /var/www/html;
+      index index.html index.htm index.nginx-debian.html;
+      server_name _;
+      location / {
+          try_files \$uri \$uri/ =404;
+      }
+  }" > /etc/nginx/sites-available/default
+  - systemctl restart nginx
+  - echo "<html><body><h1>Hostname: $(hostname)</h1><h2>IP Address: $(hostname -I)</h2></body></html>" > /var/www/html/index.html
